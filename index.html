@@ -3,628 +3,107 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Mainboard Trainer – Neo Glass</title>
+<title>Mainboard Drag & Drop Trainer — Final Edge Safe</title>
 <style>
   :root {
-    --bg: radial-gradient(circle at top, #1b2a4a 0%, #050814 55%, #02040a 100%);
-    --panel: rgba(10, 18, 38, 0.85);
-    --panel-soft: rgba(10, 18, 38, 0.75);
-    --accent: #23c483;
-    --accent-soft: rgba(35,196,131,0.22);
-    --accent-red: #ff4d4f;
-    --accent-red-soft: rgba(255,77,79,0.22);
-    --text: #f5f7ff;
-    --muted: #9fa9c5;
-    --chip-bg: rgba(9, 16, 35, 0.9);
-    --chip-border: rgba(65, 105, 225, 0.55);
-    --chip-shadow: 0 18px 40px rgba(3, 10, 30, 0.9);
-    --glass-border: 1px solid rgba(255, 255, 255, 0.14);
-    --glass-blur: blur(18px);
-
-    --zone: rgba(255, 200, 80, 0.18);
-    --zone-border: rgba(255, 200, 80, 0.9);
-    --zone-correct: rgba(35,196,131,0.16);
-    --zone-wrong: rgba(255,77,79,0.16);
-    --overlay: rgba(4, 6, 18, 0.75);
+    --bg: #0f1b2d; --panel: #15233a; --accent: #23c483; --accent-red: #ff4d4f;
+    --text: #eaf0ff; --muted: #a8b3c7;
+    --zone: rgba(255, 153, 0, 0.22);
+    --zone-border: rgba(255, 153, 0, 0.95);
+    --zone-correct: rgba(35,196,131,0.18);
+    --zone-wrong: rgba(255,77,79,0.18);
+    --overlay: rgba(5,10,22,0.6);
   }
-
   * { box-sizing: border-box; }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    color: var(--text);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
-    background-attachment: fixed;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .app {
-    display: grid;
-    grid-template-columns: minmax(320px, 360px) minmax(0, 1fr);
-    gap: 16px;
-    height: 100vh;
-    padding: 16px;
-  }
-
-  /* Glassy Sidebar */
-
-  .sidebar {
-    background: var(--panel);
-    border-radius: 20px;
-    padding: 18px 16px 16px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    backdrop-filter: var(--glass-blur);
-    border: var(--glass-border);
-    box-shadow:
-      0 22px 60px rgba(0, 0, 0, 0.6),
-      0 0 0 1px rgba(255, 255, 255, 0.02);
-  }
-
-  .sidebar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
-  .sidebar h2 {
-    margin: 0;
-    font-size: 20px;
-    letter-spacing: 0.02em;
-  }
-
-  .badge {
-    font-size: 11px;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 999px;
-    border: 1px solid rgba(111, 177, 255, 0.5);
-    background: radial-gradient(circle at top left,
-      rgba(80, 200, 255, 0.3),
-      rgba(10, 18, 38, 0.4)
-    );
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .badge-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #4fd1c5;
-    box-shadow: 0 0 10px rgba(79, 209, 197, 0.9);
-  }
-
-  .badge-dot.loading {
-    animation: pulse-dot 900ms ease-in-out infinite;
-  }
-
-  .badge-dot.error {
-    background: #f56565;
-    box-shadow: 0 0 10px rgba(245, 101, 101, 0.9);
-  }
-
-  .badge-dot.ok {
-    background: #48bb78;
-    box-shadow: 0 0 10px rgba(72, 187, 120, 0.9);
-  }
-
-  @keyframes pulse-dot {
-    0%   { transform: scale(1);   opacity: 0.8; }
-    50%  { transform: scale(1.4); opacity: 1;   }
-    100% { transform: scale(1);   opacity: 0.8; }
-  }
-
-  .subtitle {
-    margin: 0 0 8px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-
-  .controls {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin: 4px 0 12px;
-  }
-
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+  .app { display: grid; grid-template-columns: 360px 1fr; gap: 16px; height: 100vh; padding: 16px; }
+  .sidebar { background: var(--panel); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; overflow: auto; }
+  .sidebar h2 { margin: 0 0 8px; font-size: 20px; }
+  .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 12px; }
   .controls .wide { grid-column: 1 / -1; }
+  .btn { appearance: none; border: none; border-radius: 10px; padding: 10px 12px; color: #0b1628; font-weight: 600; cursor: pointer; background: #eaf0ff; transition: transform 120ms ease, filter 120ms ease; }
+  .btn.secondary { background: #cfe0ff; }
+  .btn.warn { background: #ffd9d9; color: #5a1010; }
+  .btn:active { transform: scale(0.98); filter: brightness(0.95); }
 
-  .btn {
-    appearance: none;
-    border-radius: 999px;
-    border: 1px solid rgba(133, 164, 255, 0.45);
-    padding: 9px 12px;
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    background: radial-gradient(circle at top left,
-      rgba(94, 234, 212, 0.2),
-      rgba(9, 14, 30, 0.9)
-    );
-    box-shadow:
-      0 10px 28px rgba(0, 0, 0, 0.65),
-      0 0 0 1px rgba(12, 22, 54, 0.6),
-      0 0 24px rgba(94, 234, 212, 0.08);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition:
-      transform 120ms ease,
-      box-shadow 150ms ease,
-      border-color 120ms ease,
-      background 150ms ease,
-      filter 120ms ease;
-  }
-
-  .btn.secondary {
-    background: linear-gradient(145deg, rgba(21, 35, 74, 0.95), rgba(11, 18, 39, 0.9));
-    border-color: rgba(93, 135, 255, 0.5);
-  }
-
-  .btn.warn {
-    background: linear-gradient(135deg, rgba(84, 20, 26, 0.95), rgba(32, 9, 13, 0.9));
-    border-color: rgba(255, 101, 112, 0.8);
-    color: #ffd7de;
-  }
-
-  .btn:hover {
-    transform: translateY(-1px);
-    box-shadow:
-      0 16px 40px rgba(0, 0, 0, 0.8),
-      0 0 0 1px rgba(130, 185, 255, 0.5),
-      0 0 36px rgba(94, 234, 212, 0.16);
-  }
-
-  .btn:active {
-    transform: translateY(0) scale(0.98);
-    filter: brightness(0.96);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.75);
-  }
-
-  .btn-icon {
-    font-size: 15px;
-    margin-right: 2px;
-  }
-
-  /* Score Bar */
-
-  .score {
-    margin-top: 6px;
-    margin-bottom: 4px;
-    padding: 10px 11px;
-    border-radius: 999px;
-    background: radial-gradient(circle at top left,
-      rgba(46, 204, 113, 0.16),
-      rgba(7, 11, 26, 0.98)
-    );
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    border: 1px solid rgba(46, 204, 113, 0.4);
-    box-shadow:
-      0 16px 40px rgba(0, 0, 0, 0.85),
-      0 0 0 1px rgba(1, 5, 19, 0.9);
-  }
-
+  .score { margin-top: 6px; padding: 10px; border-radius: 10px; background: #0c1730; color: var(--muted); display: flex; justify-content: space-between; align-items: center; }
   .score b { color: var(--text); }
-
-  .score-progress {
-    flex: 1;
-    margin-left: 8px;
-    margin-right: 8px;
-    background: rgba(6, 10, 24, 0.9);
-    border-radius: 999px;
-    height: 6px;
-    overflow: hidden;
-    border: 1px solid rgba(46, 204, 113, 0.3);
-  }
-
-  .score-progress-bar {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #23c483, #5ef2d5, #ffe66d);
-    box-shadow: 0 0 20px rgba(94, 242, 213, 0.7);
-    transition: width 180ms ease-out;
-  }
-
-  .score-status {
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  .list {
-    flex: 1;
-    margin-top: 12px;
-    padding-right: 4px;
-    overflow-y: auto;
-    display: grid;
-    gap: 10px;
-  }
-
-  .list::-webkit-scrollbar {
-    width: 6px;
-  }
-  .list::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .list::-webkit-scrollbar-thumb {
-    background: rgba(120, 140, 190, 0.7);
-    border-radius: 999px;
-  }
-
-  /* Chips */
+  .list { display: grid; gap: 10px; margin-top: 12px; }
 
   .chip {
-    user-select: none;
-    touch-action: none;
-    background: var(--chip-bg);
-    border: 1px solid var(--chip-border);
-    color: var(--text);
-    padding: 11px 14px;
-    border-radius: 999px;
-    font-weight: 650;
-    width: 100%;
-    text-align: left;
-    position: relative;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 14px;
-    line-height: 1.1;
-    letter-spacing: 0.02em;
-    box-shadow: var(--chip-shadow);
-    transition:
-      box-shadow 160ms ease,
-      background 160ms ease,
-      color 160ms ease,
-      transform 140ms ease,
-      border-color 140ms ease;
+    user-select: none; touch-action: none; background: #0c1730; border: 2px solid #274163; color: var(--text);
+    padding: 10px 12px; border-radius: 12px; font-weight: 700; box-shadow: 0 2px 0 #091026;
+    width: 100%; text-align: left; position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 16px; line-height: 1.1;
+    transition: box-shadow 160ms ease, background 160ms ease, color 160ms ease, transform 140ms ease;
   }
+  .chip.dragging { opacity: 0.96; transform: scale(1.04); }
+  .chip.locked { background: #0e1c34; border-color: var(--accent); color: var(--accent); cursor: default; }
 
-  .chip::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.12), transparent 60%),
-      linear-gradient(120deg, rgba(94, 234, 212, 0.12), rgba(80, 156, 255, 0.10));
-    mix-blend-mode: screen;
-    pointer-events: none;
-    opacity: 0.85;
-  }
-
-  .chip:hover:not(.locked)) {
-    transform: translateY(-1px);
-    border-color: rgba(145, 190, 255, 0.9);
-    box-shadow:
-      0 20px 45px rgba(0, 0, 0, 0.9),
-      0 0 24px rgba(94, 234, 212, 0.18);
-  }
-
-  .chip.dragging {
-    opacity: 0.98;
-    transform: scale(1.04);
-    box-shadow:
-      0 26px 55px rgba(0, 0, 0, 0.95),
-      0 0 32px rgba(94, 234, 212, 0.24);
-  }
-
-  .chip.locked {
-    background: linear-gradient(145deg,
-      rgba(34, 197, 94, 0.16),
-      rgba(11, 34, 28, 0.95)
-    );
-    border-color: rgba(35, 196, 131, 0.9);
-    color: #c7ffea;
-    cursor: default;
-  }
-
-  .chip.locked::after {
-    content: "✔";
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 14px;
-    color: #9ef8c8;
-  }
-
-  /* Board */
-
-  .board {
-    position: relative;
-    background: radial-gradient(circle at top, #111d36 0%, #02030a 60%);
-    border-radius: 24px;
-    padding: 14px;
-    display: flex;
-    align-items: stretch;
-    justify-content: center;
-    overflow: hidden;
-    box-shadow:
-      0 26px 70px rgba(0, 0, 0, 0.9),
-      0 0 0 1px rgba(12, 20, 40, 0.9);
-    backdrop-filter: blur(10px);
-  }
-
-  .board::before {
-    content: "";
-    position: absolute;
-    inset: -30%;
-    background:
-      radial-gradient(circle at 0 0, rgba(94, 234, 212, 0.15), transparent 55%),
-      radial-gradient(circle at 100% 0, rgba(93, 135, 255, 0.14), transparent 60%),
-      radial-gradient(circle at 75% 110%, rgba(255, 242, 167, 0.18), transparent 65%);
-    opacity: 0.9;
-    mix-blend-mode: screen;
-    pointer-events: none;
-  }
-
-  .img-wrap {
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-  }
-
+  .board { position: relative; background: var(--panel); border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .img-wrap { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
   #boardImg {
-    display: block;
-    max-width: 100%;
-    max-height: calc(100vh - 80px);
-    border-radius: 18px;
-    object-fit: contain;
-    background: radial-gradient(circle at top, #0b1328 0%, #02040b 70%);
-    box-shadow:
-      0 18px 40px rgba(0, 0, 0, 0.9),
-      0 0 0 1px rgba(19, 32, 60, 0.9);
-    z-index: 1;
+    display: block; max-width: 100%; max-height: calc(100vh - 64px); border-radius: 8px;
+    object-fit: contain; background: #0c1730; z-index: 1;
   }
 
-  .zones-holder {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-  }
-
-  #zonesLayer {
-    position: absolute;
-    z-index: 3;
-    pointer-events: none;
-  }
+  .zones-holder { position: absolute; inset: 0; z-index: 2; }
+  #zonesLayer { position: absolute; z-index: 3; pointer-events: none; }
 
   .zone {
     position: absolute;
     border: 2px dashed var(--zone-border);
     background: var(--zone);
-    border-radius: 12px;
+    border-radius: 10px;
     pointer-events: auto;
-    transition:
-      background 140ms ease,
-      border-color 140ms ease,
-      transform 100ms ease,
-      opacity 200ms ease,
-      box-shadow 160ms ease;
-    box-shadow:
-      0 0 0 1px rgba(255, 200, 80, 0.3),
-      0 0 24px rgba(255, 201, 104, 0.32);
+    transition: background 140ms ease, border-color 140ms ease, transform 100ms ease, opacity 200ms ease, box-shadow 140ms ease;
+    box-shadow: 0 0 0 1px rgba(255, 153, 0, 0.25);
   }
-
   .zone.highlight {
-    background: rgba(255, 210, 120, 0.36);
-    transform: scale(1.03);
-    box-shadow:
-      0 0 0 2px rgba(255, 210, 120, 0.55),
-      0 0 30px rgba(255, 210, 120, 0.6);
+    background: rgba(255, 153, 0, 0.35);
+    transform: scale(1.02);
+    box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.35);
   }
-
-  .zone.correct {
-    border-color: var(--accent);
-    background: var(--zone-correct);
-    box-shadow:
-      0 0 0 2px rgba(35, 196, 131, 0.85),
-      0 0 30px rgba(35, 196, 131, 0.7);
-  }
-
-  .zone.wrong {
-    border-color: var(--accent-red);
-    background: var(--zone-wrong);
-    box-shadow:
-      0 0 0 2px rgba(255, 77, 79, 0.8),
-      0 0 28px rgba(255, 77, 79, 0.7);
-  }
-
-  .zone.editable {
-    cursor: move;
-    outline: 1px solid rgba(255, 255, 255, 0.45);
-  }
-
-  .zone .grip {
-    position: absolute;
-    right: -8px;
-    bottom: -8px;
-    width: 18px;
-    height: 18px;
-    background: radial-gradient(circle at 30% 0,
-      #ffffff,
-      #eaf0ff 60%,
-      #b9c7ff 100%
-    );
-    border-radius: 50%;
-    box-shadow:
-      0 3px 10px rgba(0, 0, 0, 0.55),
-      0 0 0 1px rgba(5, 7, 16, 0.9);
-    display: none;
-  }
-
+  .zone.correct { border-color: var(--accent); background: var(--zone-correct); }
+  .zone.wrong   { border-color: var(--accent-red); background: var(--zone-wrong); }
+  .zone.editable { cursor: move; outline: 1px solid rgba(255,255,255,0.4); }
+  .zone .grip { position: absolute; right: -8px; bottom: -8px; width: 16px; height: 16px; background: #eaf0ff; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.35); display: none; }
   .zone.editable .grip { display: block; }
 
-  /* Overlay + Cards */
-
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--overlay);
-    z-index: 4000;
-  }
-
-  .toast {
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 22px;
-    max-width: 520px;
-    background: radial-gradient(circle at top left,
-      rgba(94, 234, 212, 0.18),
-      rgba(5, 10, 20, 0.95)
-    );
-    border-radius: 999px;
-    padding: 10px 16px;
-    border: 1px solid rgba(145, 185, 255, 0.7);
-    color: var(--text);
-    box-shadow:
-      0 18px 40px rgba(0, 0, 0, 0.95),
-      0 0 0 1px rgba(6, 10, 24, 0.96);
-    z-index: 4100;
-    font-size: 13px;
-  }
-
-  .card-modal {
-    position: fixed;
-    z-index: 4100;
-    left: 50%;
-    top: 10%;
-    transform: translateX(-50%);
-    width: min(780px, 92vw);
-    background: var(--panel-soft);
-    border-radius: 20px;
-    padding: 16px 18px 14px;
-    box-shadow:
-      0 28px 80px rgba(0, 0, 0, 0.95),
-      0 0 0 1px rgba(12, 20, 40, 0.95);
-    border: var(--glass-border);
-    backdrop-filter: var(--glass-blur);
-  }
-
-  .card-modal h3 {
-    margin: 0 0 6px;
-    font-size: 18px;
-  }
-
-  .card-modal h4 {
-    margin: 10px 0 6px;
-  }
-
-  .card-modal p {
-    margin: 4px 0 6px;
-    color: var(--muted);
-    font-size: 14px;
-  }
-
-  #infoBody ul, #extraInfo ul {
-    margin: 6px 0 0 18px;
-    color: var(--muted);
-  }
-
-  .actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-    justify-content: flex-end;
-  }
-
+  .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 24px; max-width: 520px; background: #0c1730; border: 2px solid #274163; color: var(--text); border-radius: 12px; padding: 14px 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); z-index: 4100; }
   .hidden { display: none !important; }
 
-  #confetti {
-    position: fixed;
-    inset: 0;
-    z-index: 4050;
-    pointer-events: none;
-  }
+  .overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 4000; }
+  #infoCard { position: fixed; z-index: 4100; left: 50%; top: 10%; transform: translateX(-50%); width: min(760px, 92vw); background: #0c1730; border: 2px solid #274163; color: var(--text); border-radius: 12px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+  #infoCard h3 { margin: 0 0 8px; }
+  #infoCard .actions { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; }
+  #infoBody ul { margin: 6px 0 0 18px; color: var(--muted); }
 
-  .pulse {
-    animation: pulse 900ms ease-in-out 2;
-  }
+  #winCard { position: fixed; z-index: 4100; left: 50%; top: 10%; transform: translateX(-50%); width: min(760px, 92vw); background: #0c1730; border: 2px solid #274163; color: var(--text); border-radius: 12px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+  .pulse { animation: pulse 900ms ease-in-out 2; }
+  @keyframes pulse { 0%{ transform:scale(1); box-shadow:0 0 0 rgba(35,196,131,0);} 50%{ transform:scale(1.02); box-shadow:0 0 24px rgba(35,196,131,0.35);} 100%{ transform:scale(1); box-shadow:0 0 0 rgba(35,196,131,0);} }
 
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-      text-shadow: 0 0 0 rgba(35, 196, 131, 0);
-    }
-    50% {
-      transform: scale(1.05);
-      text-shadow: 0 0 32px rgba(35, 196, 131, 0.7);
-    }
-    100% {
-      transform: scale(1);
-      text-shadow: 0 0 0 rgba(35, 196, 131, 0);
-    }
-  }
-
-  @media (max-width: 880px) {
-    .app {
-      grid-template-columns: 1fr;
-      height: auto;
-      min-height: 100vh;
-    }
-    .board {
-      min-height: 340px;
-    }
-    #boardImg {
-      max-height: 64vh;
-    }
-  }
+  #confetti { position: fixed; inset: 0; z-index: 4050; pointer-events: none; }
+  @media (max-width: 880px) { .app { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
   <div class="app">
     <aside class="sidebar">
-      <div class="sidebar-header">
-        <h2>Mainboard Trainer</h2>
-        <span class="badge" id="zonesStatusBadge">
-          <span class="badge-dot loading"></span>
-          <span>Zonen: Auto‑Load</span>
-        </span>
-      </div>
-      <p class="subtitle">Ordne die Begriffe ihren Mainboard‑Komponenten zu.</p>
-
+      <h2>Mainboard Trainer</h2>
       <div class="controls">
-        <button class="btn" id="shuffleBtn">
-          <span class="btn-icon">🎲</span>Shuffle
-        </button>
-        <button class="btn" id="fullscreenBtn">
-          <span class="btn-icon">⤢</span>Vollbild
-        </button>
+        <button class="btn" id="shuffleBtn">Shuffle</button>
+        <button class="btn" id="fullscreenBtn">Vollbild</button>
         <button class="btn secondary" id="toggleEditBtn">Ziel‑Editor</button>
         <button class="btn secondary" id="saveZonesBtn">Zonen speichern</button>
         <button class="btn secondary" id="exportZonesBtn">Zonen exportieren</button>
         <button class="btn secondary" id="importZonesBtn">Zonen importieren</button>
-        <button class="btn secondary wide" id="toggleZonesBtn">Zonen ausblenden</button>
+        <button class="btn secondary wide" id="toggleZonesBtn">Zonen an/aus</button>
         <button class="btn warn wide" id="resetBtn">Zurücksetzen</button>
       </div>
-
       <div class="score">
         <div>Score: <b id="scoreVal">0</b>/<span id="scoreMax">0</span></div>
-        <div class="score-progress">
-          <div class="score-progress-bar" id="scoreBar"></div>
-        </div>
-        <div class="score-status" id="progressText">Los geht’s!</div>
+        <div id="progressText">Los geht’s!</div>
       </div>
-
       <div class="list" id="chipsList"></div>
     </aside>
 
@@ -643,38 +122,23 @@
   </div>
 
   <div class="overlay hidden" id="overlay"></div>
-
-  <div id="infoCard" class="card-modal hidden" role="dialog" aria-modal="true">
+  <div id="infoCard" class="hidden" role="dialog" aria-modal="true">
     <h3 id="infoTitle">Komponente</h3>
     <div id="infoBody">Beschreibung</div>
-    <div class="actions">
-      <button class="btn secondary" id="closeInfoBtn">Weiter</button>
-    </div>
+    <div class="actions"><button class="btn secondary" id="closeInfoBtn">Weiter</button></div>
   </div>
 
-  <div id="winCard" class="card-modal hidden" role="dialog" aria-modal="true">
+  <div id="winCard" class="hidden" role="dialog" aria-modal="true">
     <h3 id="winTitle" class="pulse">Glückwunsch! Alles korrekt 🎉</h3>
-    <p>Du hast alle Begriffe richtig zugeordnet – ideal zum Üben für die Prüfung.</p>
+    <p>Du hast alle Begriffe richtig zugeordnet. Stark!</p>
     <h4>Extra‑Info: Speicherbus, Schnittstellen & Praxis</h4>
     <div id="extraInfo"></div>
-    <div class="actions">
-      <button class="btn" id="restartBtn">Neu starten</button>
-    </div>
+    <div class="actions"><button class="btn" id="restartBtn">Neu starten</button></div>
   </div>
 
   <input type="file" class="hidden" id="zonesFileInput" accept="application/json" />
 
 <script>
-  // *** Globale Konfiguration ***
-  const DEFAULT_ZONES_URL =
-    'https://deinserver.de/pfad/FinalZones2.json'; // <- hier deinen echten JSON-Link eintragen
-
-  function getZonesUrlFromQuery() {
-    const url = new URL(window.location.href);
-    const override = url.searchParams.get('zones');
-    return override || DEFAULT_ZONES_URL;
-  }
-
   const COMPONENTS = [
     { key: 'cpu_socket',    label: 'CPU‑Sockel',
       info: `Der CPU‑Sockel verbindet Prozessor und Mainboard mechanisch & elektrisch.
@@ -743,58 +207,42 @@
     </ul>
   `;
 
-  const state = {
-    score: 0,
-    total: COMPONENTS.length,
-    placements: new Map(),
-    showZones: true,
-    editing: false,
-    imageKey: 'conrad-002842510PI00',
-  };
+  const state = { score: 0, total: COMPONENTS.length, placements: new Map(), showZones: true, editing: false, imageKey: 'conrad-002842510PI00' };
 
-  const imgWrap        = document.getElementById('imgWrap');
-  const boardImg       = document.getElementById('boardImg');
-  const zonesHolder    = document.getElementById('zonesHolder');
-  const zonesLayer     = document.getElementById('zonesLayer');
-  const chipsList      = document.getElementById('chipsList');
-  const scoreVal       = document.getElementById('scoreVal');
-  const scoreMax       = document.getElementById('scoreMax');
-  const progressText   = document.getElementById('progressText');
-  const scoreBar       = document.getElementById('scoreBar');
-  const toast          = document.getElementById('toast');
-  const overlay        = document.getElementById('overlay');
-  const infoCard       = document.getElementById('infoCard');
-  const infoTitle      = document.getElementById('infoTitle');
-  const infoBody       = document.getElementById('infoBody');
-  const winCard        = document.getElementById('winCard');
-  const winTitle       = document.getElementById('winTitle');
-  const extraInfo      = document.getElementById('extraInfo');
-  const zonesStatusBadge = document.getElementById('zonesStatusBadge');
+  // DOM
+  const imgWrap = document.getElementById('imgWrap');
+  const boardImg = document.getElementById('boardImg');
+  const zonesHolder = document.getElementById('zonesHolder');
+  const zonesLayer = document.getElementById('zonesLayer');
+  const chipsList = document.getElementById('chipsList');
+  const scoreVal = document.getElementById('scoreVal');
+  const scoreMax = document.getElementById('scoreMax');
+  const progressText = document.getElementById('progressText');
+  const toast = document.getElementById('toast');
+  const overlay = document.getElementById('overlay');
+  const infoCard = document.getElementById('infoCard');
+  const infoTitle = document.getElementById('infoTitle');
+  const infoBody = document.getElementById('infoBody');
+  const winCard = document.getElementById('winCard');
+  const winTitle = document.getElementById('winTitle');
+  const extraInfo = document.getElementById('extraInfo');
 
-  const shuffleBtn     = document.getElementById('shuffleBtn');
-  const fullscreenBtn  = document.getElementById('fullscreenBtn');
+  const shuffleBtn = document.getElementById('shuffleBtn');
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
   const toggleZonesBtn = document.getElementById('toggleZonesBtn');
-  const toggleEditBtn  = document.getElementById('toggleEditBtn');
-  const saveZonesBtn   = document.getElementById('saveZonesBtn');
+  const toggleEditBtn = document.getElementById('toggleEditBtn');
+  const saveZonesBtn = document.getElementById('saveZonesBtn');
   const exportZonesBtn = document.getElementById('exportZonesBtn');
   const importZonesBtn = document.getElementById('importZonesBtn');
   const zonesFileInput = document.getElementById('zonesFileInput');
-  const resetBtn       = document.getElementById('resetBtn');
-  const closeInfoBtn   = document.getElementById('closeInfoBtn');
-  const restartBtn     = document.getElementById('restartBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const closeInfoBtn = document.getElementById('closeInfoBtn');
+  const restartBtn = document.getElementById('restartBtn');
 
   const confettiCanvas = document.getElementById('confetti');
-  const ctx            = confettiCanvas.getContext('2d');
+  const ctx = confettiCanvas.getContext('2d');
 
   let overlayMetrics = { left: 0, top: 0, width: 0, height: 0 };
-
-  function setBadgeState(state, message) {
-    if (!zonesStatusBadge) return;
-    zonesStatusBadge.innerHTML = `
-      <span class="badge-dot ${state}"></span>
-      <span>${message}</span>
-    `;
-  }
 
   async function ensureImageReady() {
     if (boardImg.complete && boardImg.naturalWidth > 0) return;
@@ -803,10 +251,7 @@
   }
 
   const ro = new ResizeObserver(() => {
-    requestAnimationFrame(() => {
-      syncOverlay();
-      renderZones();
-    });
+    requestAnimationFrame(() => { syncOverlay(); renderZones(); });
   });
   ro.observe(boardImg);
 
@@ -814,10 +259,7 @@
     scoreMax.textContent = state.total;
     buildChips();
     await ensureImageReady();
-    requestAnimationFrame(() => {
-      syncOverlay();
-      renderZones();
-    });
+    requestAnimationFrame(() => { syncOverlay(); renderZones(); });
     updateScore();
     resizeCanvas();
     loadSavedZones();
@@ -825,8 +267,7 @@
 
   window.addEventListener('resize', () => {
     requestAnimationFrame(() => {
-      syncOverlay();
-      renderZones();
+      syncOverlay(); renderZones();
       chipsList.querySelectorAll('.chip.locked').forEach(ch => {
         const zone = zonesLayer.querySelector(`.zone[data-key="${ch.dataset.key}"]`);
         if (zone) snapChipToZone(ch, zone, true);
@@ -839,30 +280,26 @@
     chipsList.innerHTML = '';
     COMPONENTS.forEach(comp => {
       const chip = document.createElement('button');
-      chip.className = 'chip';
-      chip.textContent = comp.label;
-      chip.title = comp.label;
-      chip.dataset.key = comp.key;
-      chipsList.appendChild(chip);
-      makeDraggable(chip);
+      chip.className = 'chip'; chip.textContent = comp.label; chip.title = comp.label; chip.dataset.key = comp.key;
+      chipsList.appendChild(chip); makeDraggable(chip);
     });
   }
 
   function syncOverlay() {
     const wrapRect = imgWrap.getBoundingClientRect();
     const imgRects = boardImg.getClientRects();
-    const imgRect  = imgRects.length ? imgRects[0] : boardImg.getBoundingClientRect();
+    const imgRect = imgRects.length ? imgRects[0] : boardImg.getBoundingClientRect();
     if (!imgRect.width || !imgRect.height) return;
 
-    const left   = Math.round(imgRect.left - wrapRect.left);
-    const top    = Math.round(imgRect.top  - wrapRect.top);
+    const left = Math.round(imgRect.left - wrapRect.left);
+    const top  = Math.round(imgRect.top  - wrapRect.top);
     const width  = Math.round(imgRect.width);
     const height = Math.round(imgRect.height);
 
     overlayMetrics = { left, top, width, height };
 
-    zonesLayer.style.left   = left + 'px';
-    zonesLayer.style.top    = top  + 'px';
+    zonesLayer.style.left = left + 'px';
+    zonesLayer.style.top  = top  + 'px';
     zonesLayer.style.width  = width  + 'px';
     zonesLayer.style.height = height + 'px';
 
@@ -878,8 +315,7 @@
 
     ZONES.forEach(z => {
       const el = document.createElement('div');
-      el.className = 'zone';
-      el.dataset.key = z.key;
+      el.className = 'zone'; el.dataset.key = z.key;
       el.style.left   = (W * Number(z.x) / 100) + 'px';
       el.style.top    = (H * Number(z.y) / 100) + 'px';
       el.style.width  = (W * Number(z.w) / 100) + 'px';
@@ -888,9 +324,7 @@
 
       if (state.editing) {
         el.classList.add('editable');
-        const grip = document.createElement('div');
-        grip.className = 'grip';
-        el.appendChild(grip);
+        const grip = document.createElement('div'); grip.className = 'grip'; el.appendChild(grip);
         enableZoneDragAndResize(el, grip);
       }
     });
@@ -899,30 +333,17 @@
 
   function setZonesVisible(show) {
     state.showZones = show;
-    zonesLayer.querySelectorAll('.zone').forEach(z => {
-      z.style.opacity = show ? '1' : '0';
-    });
+    zonesLayer.querySelectorAll('.zone').forEach(z => z.style.opacity = show ? '1' : '0');
     toggleZonesBtn.textContent = show ? 'Zonen ausblenden' : 'Zonen einblenden';
   }
 
-  function showToast(msg) {
-    toast.textContent = msg;
-    toast.classList.remove('hidden');
-    setTimeout(() => toast.classList.add('hidden'), 2000);
-  }
+  function showToast(msg) { toast.textContent = msg; toast.classList.remove('hidden'); setTimeout(() => toast.classList.add('hidden'), 2000); }
+  function updateScore() { scoreVal.textContent = state.score; const remain = state.total - state.score; progressText.textContent = remain > 0 ? `Noch ${remain} offen` : `Fertig 🎯`; }
 
-  function updateScore() {
-    scoreVal.textContent = state.score;
-    const remain = state.total - state.score;
-    progressText.textContent = remain > 0 ? `Noch ${remain} offen` : `Fertig 🎯`;
-    const percent = (state.score / state.total) * 100;
-    scoreBar.style.width = `${percent}%`;
-  }
-
+  // Drag/Drop Chips — Breite auf Textlänge begrenzen
   function makeDraggable(el) {
-    let dragging = false, startX = 0, startY = 0;
-
-    el.addEventListener('pointerdown', ev => {
+    let dragging = false, startX = 0, startY = 0, originRect = null;
+    el.addEventListener('pointerdown', (ev) => {
       if (el.classList.contains('locked')) return;
       dragging = true;
       el.setPointerCapture(ev.pointerId);
@@ -934,7 +355,7 @@
       const naturalWidth = Math.ceil(el.scrollWidth);
       el.style.width = naturalWidth + 'px';
 
-      const originRect = el.getBoundingClientRect();
+      originRect = el.getBoundingClientRect();
       startX = ev.clientX - originRect.left;
       startY = ev.clientY - originRect.top;
 
@@ -943,23 +364,19 @@
       moveChip(el, ev.clientX - startX, ev.clientY - startY);
     });
 
-    el.addEventListener('pointermove', ev => {
+    el.addEventListener('pointermove', (ev) => {
       if (!dragging) return;
       moveChip(el, ev.clientX - startX, ev.clientY - startY);
       highlightZones(ev.clientX, ev.clientY);
     });
 
-    el.addEventListener('pointerup', ev => {
+    el.addEventListener('pointerup', (ev) => {
       if (!dragging) return;
       dragging = false;
       el.classList.remove('dragging');
       const target = getHitZone(ev.clientX, ev.clientY);
       zonesLayer.querySelectorAll('.zone').forEach(z => z.classList.remove('highlight'));
-
-      if (!target) {
-        bounceBack(el);
-        return;
-      }
+      if (!target) { bounceBack(el); return; }
 
       if (target.dataset.key === el.dataset.key) {
         target.classList.add('correct');
@@ -976,277 +393,142 @@
         bounceBack(el);
       }
     });
-
-    el.addEventListener('pointercancel', () => {
-      if (!dragging) return;
-      dragging = false;
-      el.classList.remove('dragging');
-      bounceBack(el);
-    });
   }
 
-  function moveChip(el, x, y) {
-    el.style.left = x + 'px';
-    el.style.top  = y + 'px';
-  }
+  function moveChip(el, x, y) { el.style.left = x + 'px'; el.style.top = y + 'px'; }
 
   function bounceBack(el) {
     el.style.transition = 'transform 180ms ease';
     el.style.transform = 'translateY(-6px)';
     setTimeout(() => {
-      el.style.transform = '';
-      el.style.transition = '';
-      el.style.width = '';
-      el.style.display = '';
-      el.style.whiteSpace = '';
-      el.style.position = '';
-      el.style.left = '';
-      el.style.top = '';
-      el.style.zIndex = '';
+      el.style.transform = el.style.transition = '';
+      el.style.width = ''; el.style.display = ''; el.style.whiteSpace = '';
+      el.style.position = el.style.left = el.style.top = el.style.zIndex = '';
       chipsList.appendChild(el);
     }, 180);
     showToast('❌ Falsch – versuch’s nochmal');
   }
 
-  function snapChipToZone(el, zone, adapt = false) {
+  function snapChipToZone(el, zone, adapt=false) {
     const zr = zone.getBoundingClientRect();
     el.style.position = 'fixed';
     el.style.left = (zr.left + 6) + 'px';
     el.style.top  = (zr.top + 6) + 'px';
     el.style.zIndex = '50';
     if (adapt) adaptChipToZone(el, zone);
-    el.animate(
-      [{ transform: 'scale(0.98)' }, { transform: 'scale(1)' }],
-      { duration: 140 }
-    );
+    el.animate([{ transform: 'scale(0.98)' }, { transform: 'scale(1)' }], { duration: 140 });
     showToast('✅ Richtig!');
   }
 
   function adaptChipToZone(chip, zone) {
     const zr = zone.getBoundingClientRect();
     const pad = 8;
-    const targetW = Math.max(zr.width - pad * 2, 70);
-    const targetH = Math.max(zr.height - pad * 2, 30);
-
+    const targetW = Math.max(zr.width - pad*2, 60);
+    const targetH = Math.max(zr.height - pad*2, 28);
     chip.style.width  = targetW + 'px';
     chip.style.height = targetH + 'px';
     chip.style.whiteSpace = 'normal';
     chip.style.wordBreak = 'break-word';
     chip.style.hyphens = 'auto';
     chip.style.lineHeight = '1.1';
-
-    let fontSize = 16;
+    let fontSize = 18;
     chip.style.fontSize = fontSize + 'px';
-    const fits = () =>
-      chip.scrollWidth <= chip.clientWidth &&
-      chip.scrollHeight <= chip.clientHeight;
-
-    while (!fits() && fontSize > 10) {
-      fontSize -= 1;
-      chip.style.fontSize = fontSize + 'px';
-    }
+    const fits = () => chip.scrollWidth <= chip.clientWidth && chip.scrollHeight <= chip.clientHeight;
+    while (!fits() && fontSize > 10) { fontSize -= 1; chip.style.fontSize = fontSize + 'px'; }
   }
 
   function highlightZones(cx, cy) {
     const target = getHitZone(cx, cy);
-    zonesLayer.querySelectorAll('.zone').forEach(z =>
-      z.classList.remove('highlight')
-    );
+    zonesLayer.querySelectorAll('.zone').forEach(z => z.classList.remove('highlight'));
     if (target) target.classList.add('highlight');
   }
 
   function getHitZone(cx, cy) {
     return Array.from(zonesLayer.querySelectorAll('.zone'))
-      .find(z => {
-        const r = z.getBoundingClientRect();
-        return (cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom);
-      }) || null;
+      .find(z => { const r = z.getBoundingClientRect(); return (cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom); }) || null;
   }
-
-  function flashWrong(zone) {
-    zone.classList.add('wrong');
-    setTimeout(() => zone.classList.remove('wrong'), 300);
-  }
+  function flashWrong(zone) { zone.classList.add('wrong'); setTimeout(() => zone.classList.remove('wrong'), 300); }
 
   function enableZoneDragAndResize(zoneEl, grip) {
-    let dragging = false, resizing = false;
-    let offsetX = 0, offsetY = 0, startW = 0, startH = 0, startX = 0, startY = 0;
-
-    zoneEl.addEventListener('pointerdown', ev => {
+    let dragging = false, resizing = false, offsetX = 0, offsetY = 0, startW = 0, startH = 0, startX = 0, startY = 0;
+    zoneEl.addEventListener('pointerdown', (ev) => {
       if (!state.editing || ev.target === grip) return;
-      dragging = true;
-      zoneEl.setPointerCapture(ev.pointerId);
-      const r = zoneEl.getBoundingClientRect();
-      offsetX = ev.clientX - r.left;
-      offsetY = ev.clientY - r.top;
+      dragging = true; zoneEl.setPointerCapture(ev.pointerId);
+      const r = zoneEl.getBoundingClientRect(); offsetX = ev.clientX - r.left; offsetY = ev.clientY - r.top;
     });
-
-    grip.addEventListener('pointerdown', ev => {
+    grip.addEventListener('pointerdown', (ev) => {
       if (!state.editing) return;
-      resizing = true;
-      zoneEl.setPointerCapture(ev.pointerId);
-      const r = zoneEl.getBoundingClientRect();
-      startW = r.width;
-      startH = r.height;
-      startX = ev.clientX;
-      startY = ev.clientY;
+      resizing = true; zoneEl.setPointerCapture(ev.pointerId);
+      const r = zoneEl.getBoundingClientRect(); startW = r.width; startH = r.height; startX = ev.clientX; startY = ev.clientY;
     });
-
-    zoneEl.addEventListener('pointermove', ev => {
+    zoneEl.addEventListener('pointermove', (ev) => {
       if (!state.editing) return;
       const layerRect = zonesLayer.getBoundingClientRect();
-
       if (dragging) {
-        const nx = Math.min(
-          Math.max(ev.clientX - layerRect.left - offsetX, 0),
-          layerRect.width - zoneEl.offsetWidth
-        );
-        const ny = Math.min(
-          Math.max(ev.clientY - layerRect.top - offsetY, 0),
-          layerRect.height - zoneEl.offsetHeight
-        );
-        zoneEl.style.left = nx + 'px';
-        zoneEl.style.top  = ny + 'px';
+        const nx = Math.min(Math.max(ev.clientX - layerRect.left - offsetX, 0), layerRect.width - zoneEl.offsetWidth);
+        const ny = Math.min(Math.max(ev.clientY - layerRect.top  - offsetY, 0), layerRect.height - zoneEl.offsetHeight);
+        zoneEl.style.left = nx + 'px'; zoneEl.style.top = ny + 'px';
       }
-
       if (resizing) {
-        const newW = Math.min(
-          Math.max(startW + (ev.clientX - startX), 30),
-          layerRect.width - zoneEl.offsetLeft
-        );
-        const newH = Math.min(
-          Math.max(startH + (ev.clientY - startY), 24),
-          layerRect.height - (zoneEl.offsetTop - layerRect.top)
-        );
-        zoneEl.style.width  = newW + 'px';
-        zoneEl.style.height = newH + 'px';
+        const newW = Math.min(Math.max(startW + (ev.clientX - startX), 30), layerRect.width - zoneEl.offsetLeft);
+        const newH = Math.min(Math.max(startH + (ev.clientY - startY), 24), layerRect.height - (zoneEl.offsetTop - layerRect.top));
+        zoneEl.style.width = newW + 'px'; zoneEl.style.height = newH + 'px';
       }
     });
-
-    zoneEl.addEventListener('pointerup', () => {
-      dragging = false;
-      resizing = false;
-    });
-    zoneEl.addEventListener('pointercancel', () => {
-      dragging = false;
-      resizing = false;
-    });
+    zoneEl.addEventListener('pointerup', () => { dragging = false; resizing = false; });
+    zoneEl.addEventListener('pointercancel', () => { dragging = false; resizing = false; });
   }
 
   function openInfoFromZone(zoneEl, comp) {
-    infoTitle.textContent = comp.label;
-    infoBody.innerHTML = comp.info;
-    overlay.classList.remove('hidden');
-    infoCard.classList.remove('hidden');
-
-    const from = zoneEl.getBoundingClientRect();
-    const to   = infoCard.getBoundingClientRect();
-    const deltaX = from.left + from.width / 2 - (to.left + to.width / 2);
-    const deltaY = from.top  + from.height / 2 - (to.top  + to.height / 2);
-    const scaleX = from.width / to.width;
-    const scaleY = from.height / to.height;
-
-    infoCard.animate(
-      [
-        {
-          transform: `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`,
-          opacity: 0.4
-        },
-        {
-          transform: 'translate(0,0) scale(1,1)',
-          opacity: 1
-        }
-      ],
-      {
-        duration: 520,
-        easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
-      }
-    );
+    infoTitle.textContent = comp.label; infoBody.innerHTML = comp.info;
+    overlay.classList.remove('hidden'); infoCard.classList.remove('hidden');
+    const from = zoneEl.getBoundingClientRect(); const to = infoCard.getBoundingClientRect();
+    const deltaX = from.left + from.width/2 - (to.left + to.width/2);
+    const deltaY = from.top  + from.height/2 - (to.top  + to.height/2);
+    const scaleX = from.width / to.width; const scaleY = from.height / to.height;
+    infoCard.animate([{ transform:`translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`, opacity:0.6 }, { transform:'translate(0,0) scale(1,1)', opacity:1 }], { duration:520, easing:'cubic-bezier(0.22, 1, 0.36, 1)' });
   }
-
-  closeInfoBtn.addEventListener('click', () => {
-    overlay.classList.add('hidden');
-    infoCard.classList.add('hidden');
-  });
+  closeInfoBtn.addEventListener('click', () => { overlay.classList.add('hidden'); infoCard.classList.add('hidden'); });
 
   function checkWin() {
     if (state.score >= state.total) {
-      extraInfo.innerHTML = EXTRA_INFO;
-      runConfetti(6000);
-      overlay.classList.remove('hidden');
-      winCard.classList.remove('hidden');
-      winTitle.classList.remove('pulse');
-      void winTitle.offsetWidth;
-      winTitle.classList.add('pulse');
+      extraInfo.innerHTML = EXTRA_INFO; runConfetti(6000);
+      overlay.classList.remove('hidden'); winCard.classList.remove('hidden');
+      winTitle.classList.remove('pulse'); void winTitle.offsetWidth; winTitle.classList.add('pulse');
     }
   }
-
-  restartBtn.addEventListener('click', () => {
-    overlay.classList.add('hidden');
-    winCard.classList.add('hidden');
-    resetAll();
-  });
+  restartBtn.addEventListener('click', () => { overlay.classList.add('hidden'); winCard.classList.add('hidden'); resetAll(); });
 
   toggleEditBtn.addEventListener('click', () => {
     state.editing = !state.editing;
     toggleEditBtn.textContent = state.editing ? 'Editor aktiv (Speichern)' : 'Ziel‑Editor';
-    requestAnimationFrame(() => {
-      syncOverlay();
-      renderZones();
-    });
-    showToast(state.editing
-      ? 'Editor aktiv – Zonen verschiebbar & resizebar'
-      : 'Editor beendet – gespeichert'
-    );
+    requestAnimationFrame(() => { syncOverlay(); renderZones(); });
+    showToast(state.editing ? 'Editor aktiv – Zonen verschiebbar & resizebar' : 'Editor beendet – gespeichert');
     if (!state.editing) saveZones();
   });
-
   saveZonesBtn.addEventListener('click', saveZones);
   toggleZonesBtn.addEventListener('click', () => setZonesVisible(!state.showZones));
   resetBtn.addEventListener('click', resetAll);
   shuffleBtn.addEventListener('click', () => shuffleList(chipsList));
-
   fullscreenBtn.addEventListener('click', async () => {
     const el = document.documentElement;
-    try {
-      if (!document.fullscreenElement) await el.requestFullscreen();
-      else await document.exitFullscreen();
-    } catch {
-      showToast('Vollbild nicht möglich');
-    }
+    try { if (!document.fullscreenElement) await el.requestFullscreen(); else await document.exitFullscreen(); }
+    catch (e) { showToast('Vollbild nicht möglich'); }
   });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') { overlay.classList.add('hidden'); infoCard.classList.add('hidden'); winCard.classList.add('hidden'); } });
+  overlay.addEventListener('click', () => { overlay.classList.add('hidden'); infoCard.classList.add('hidden'); winCard.classList.add('hidden'); });
 
-  window.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      overlay.classList.add('hidden');
-      infoCard.classList.add('hidden');
-      winCard.classList.add('hidden');
-    }
-  });
-
-  overlay.addEventListener('click', () => {
-    overlay.classList.add('hidden');
-    infoCard.classList.add('hidden');
-    winCard.classList.add('hidden');
-  });
-
+  // Export
   exportZonesBtn.addEventListener('click', () => {
-    const blob = new Blob(
-      [JSON.stringify({ imageKey: state.imageKey, zones: ZONES }, null, 2)],
-      { type: 'application/json' }
-    );
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `zones_${state.imageKey}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    const blob = new Blob([JSON.stringify({ imageKey: state.imageKey, zones: ZONES }, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob); const a = document.createElement('a');
+    a.href = url; a.download = `zones_${state.imageKey}.json`; a.click(); URL.revokeObjectURL(url);
     showToast('Zonen exportiert (JSON)');
   });
 
+  // Import — FIXED: anwenden, entsperren, rAF + ensureImageReady
   importZonesBtn.addEventListener('click', () => zonesFileInput.click());
-
-  zonesFileInput.addEventListener('change', async e => {
+  zonesFileInput.addEventListener('change', async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
@@ -1254,12 +536,9 @@
       const data = JSON.parse(text);
       const nextZones = Array.isArray(data) ? data : data.zones;
 
-      if (!nextZones || !nextZones.length) {
-        showToast('Ungültige Zonen‑Datei');
-        e.target.value = '';
-        return;
-      }
+      if (!nextZones || !nextZones.length) { showToast('Ungültige Zonen‑Datei'); e.target.value=''; return; }
 
+      // Werte normalisieren
       ZONES = nextZones.map(z => ({
         key: z.key,
         x: Number(z.x),
@@ -1268,38 +547,29 @@
         h: Number(z.h)
       }));
 
+      // Speicher aktualisieren (aktueller imageKey bleibt erhalten)
       localStorage.setItem('zones-' + state.imageKey, JSON.stringify(ZONES));
 
-      state.score = 0;
-      state.placements.clear();
-      updateScore();
-
+      // Chips entsperren und Score resetten, damit neue Positionen klar erkennbar sind
+      state.score = 0; state.placements.clear(); updateScore();
       chipsList.querySelectorAll('.chip').forEach(ch => {
         ch.classList.remove('locked');
-        ch.style.transform = '';
-        ch.style.position = '';
-        ch.style.left = '';
-        ch.style.top = '';
-        ch.style.zIndex = '';
-        ch.style.width = '';
-        ch.style.height = '';
-        ch.style.fontSize = '';
-        ch.style.display = '';
-        ch.style.whiteSpace = '';
+        ch.style.transform = ch.style.position = ch.style.left = ch.style.top = ch.style.zIndex = '';
+        ch.style.width = ch.style.height = ch.style.fontSize = '';
+        ch.style.display = ''; ch.style.whiteSpace = '';
         chipsList.appendChild(ch);
       });
 
+      // Sicher neu rendern (Edge-safe)
       await ensureImageReady();
-      requestAnimationFrame(() => {
-        syncOverlay();
-        renderZones();
-      });
+      requestAnimationFrame(() => { syncOverlay(); renderZones(); });
 
       showToast('Zonen importiert und angewendet');
     } catch (err) {
       console.error('Import error:', err);
       showToast('Import fehlgeschlagen');
     } finally {
+      // Damit das gleiche File erneut importiert werden kann
       e.target.value = '';
     }
   });
@@ -1310,13 +580,12 @@
     zonesLayer.querySelectorAll('.zone').forEach(z => {
       const r = z.getBoundingClientRect();
       const xPct = ((r.left - layerRect.left) / layerRect.width) * 100;
-      const yPct = ((r.top  - layerRect.top ) / layerRect.height) * 100;
+      const yPct = ((r.top  - layerRect.top  ) / layerRect.height) * 100;
       const wPct = (r.width  / layerRect.width) * 100;
       const hPct = (r.height / layerRect.height) * 100;
       next.push({ key: z.dataset.key, x: xPct, y: yPct, w: wPct, h: hPct });
     });
-    ZONES = next;
-    localStorage.setItem('zones-' + state.imageKey, JSON.stringify(ZONES));
+    ZONES = next; localStorage.setItem('zones-' + state.imageKey, JSON.stringify(ZONES));
     showToast('Zonen gespeichert');
   }
 
@@ -1325,9 +594,7 @@
     if (raw) {
       try {
         ZONES = JSON.parse(raw);
-        requestAnimationFrame(() => {
-          renderZones();
-        });
+        requestAnimationFrame(() => { renderZones(); });
         showToast('Gespeicherte Zonen geladen');
         return true;
       } catch {}
@@ -1335,8 +602,7 @@
     return false;
   }
 
-  const rng = n => Math.floor(Math.random() * n);
-
+  const rng = (n) => Math.floor(Math.random() * n);
   function shuffleList(parent) {
     const nodes = Array.from(parent.children);
     for (let i = nodes.length - 1; i > 0; i--) {
@@ -1345,94 +611,50 @@
       [nodes[i], nodes[j]] = [nodes[j], nodes[i]];
     }
   }
-
   function resetAll() {
-    state.score = 0;
-    state.placements.clear();
-    updateScore();
-
+    state.score = 0; state.placements.clear(); updateScore();
     chipsList.querySelectorAll('.chip').forEach(ch => {
       ch.classList.remove('locked');
-      ch.style.transform = '';
-      ch.style.position = '';
-      ch.style.left = '';
-      ch.style.top = '';
-      ch.style.zIndex = '';
-      ch.style.width = '';
-      ch.style.height = '';
-      ch.style.fontSize = '';
-      ch.style.display = '';
-      ch.style.whiteSpace = '';
+      ch.style.transform = ch.style.position = ch.style.left = ch.style.top = ch.style.zIndex = '';
+      ch.style.width = ch.style.height = ch.style.fontSize = '';
+      ch.style.display = ''; ch.style.whiteSpace = '';
       chipsList.appendChild(ch);
     });
-
-    zonesLayer.querySelectorAll('.zone').forEach(z =>
-      z.classList.remove('correct', 'wrong')
-    );
+    zonesLayer.querySelectorAll('.zone').forEach(z => z.classList.remove('correct','wrong'));
     showToast('Zurückgesetzt');
   }
 
-  function resizeCanvas() {
-    confettiCanvas.width = window.innerWidth;
-    confettiCanvas.height = window.innerHeight;
-  }
-
+  function resizeCanvas() { confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
   function runConfetti(ms = 5000) {
-    const particles = [];
-    const colors = ['#23c483', '#ffd166', '#06d6a0', '#118ab2', '#ef476f', '#a8b3c7'];
-    const count = 220;
-
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x: Math.random() * confettiCanvas.width,
-        y: -10 - Math.random() * 200,
-        vx: -1 + Math.random() * 2,
-        vy: 2 + Math.random() * 3,
-        size: 3 + Math.random() * 6,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        angle: Math.random() * Math.PI * 2,
-        spin: (-0.1 + Math.random() * 0.2)
-      });
-    }
-
+    const particles = []; const colors = ['#23c483','#ffd166','#06d6a0','#118ab2','#ef476f','#a8b3c7']; const count = 220;
+    for (let i = 0; i < count; i++)
+      particles.push({ x: Math.random()*confettiCanvas.width, y: -10 - Math.random()*200, vx: -1 + Math.random()*2, vy: 2 + Math.random()*3, size: 3 + Math.random()*6, color: colors[Math.floor(Math.random()*colors.length)], angle: Math.random()*Math.PI*2, spin: (-0.1 + Math.random()*0.2) });
     let start = null;
     function step(ts) {
-      if (!start) start = ts;
-      const dt = ts - start;
-      ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      if (!start) start = ts; const dt = (ts - start);
+      ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
       particles.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.angle += p.spin;
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.angle);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.4);
+        p.x+=p.vx; p.y+=p.vy; p.angle+=p.spin;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.angle);
+        ctx.fillStyle=p.color; ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*1.4);
         ctx.restore();
       });
-      if (dt < ms) requestAnimationFrame(step);
-      else ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      if (dt < ms) requestAnimationFrame(step); else ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
     }
     requestAnimationFrame(step);
   }
-
+  // Auto-load zones JSON hosted next to this HTML
   async function autoLoadHostedZones() {
-    const url = getZonesUrlFromQuery();
     try {
-      setBadgeState('loading', 'Zonen werden geladen…');
-      showToast('🌐 Lade Zonen von\n' + url);
-
-      const res = await fetch(
-        url + (url.includes('?') ? '&' : '?') + 'cb=' + Date.now(),
-        { cache: 'no-store' }
-      );
+      // Encode space in file name; cache-bust so updates show immediately
+      const res = await fetch('Final%20Zones2.json?cb=' + Date.now(), { cache: 'no-store' });
       if (!res.ok) throw new Error('HTTP ' + res.status);
 
       const data = await res.json();
       const nextZones = Array.isArray(data) ? data : data.zones;
       if (!nextZones || !nextZones.length) throw new Error('Invalid zones payload');
 
+      // Apply and normalize values
       window.ZONES = nextZones.map(z => ({
         key: z.key,
         x: Number(z.x),
@@ -1441,32 +663,31 @@
         h: Number(z.h)
       }));
 
+      // Optional: adopt imageKey from file
       if (data.imageKey) window.state.imageKey = data.imageKey;
 
+      // Persist and render (Edge-safe)
       localStorage.setItem('zones-' + window.state.imageKey, JSON.stringify(window.ZONES));
-      await ensureImageReady();
-      requestAnimationFrame(() => {
+      if (typeof ensureImageReady === 'function') await ensureImageReady();
+      requestAnimationFrame(() => { 
         if (typeof syncOverlay === 'function') syncOverlay();
         if (typeof renderZones === 'function') renderZones();
       });
 
-      setBadgeState('ok', 'Zonen geladen');
-      showToast('✅ Zonen erfolgreich geladen');
-
+      if (typeof showToast === 'function') showToast('Zonen automatisch geladen');
       return true;
     } catch (e) {
       console.debug('Auto-Load Zonen fehlgeschlagen:', e);
-      setBadgeState('error', 'Auto‑Load fehlgeschlagen');
-      showToast('⚠️ Auto‑Load fehlgeschlagen – nutze lokale Zonen');
       return false;
     }
   }
 
+  // Run once at startup: try hosted JSON first, else fall back
   (async function () {
     const ok = await autoLoadHostedZones();
     if (!ok) {
       if (typeof loadSavedZones === 'function') loadSavedZones();
-      requestAnimationFrame(() => {
+      requestAnimationFrame(() => { 
         if (typeof syncOverlay === 'function') syncOverlay();
         if (typeof renderZones === 'function') renderZones();
       });
@@ -1474,4 +695,7 @@
   })();
 </script>
 </body>
-</html>l>
+</html>
+
+
+
