@@ -643,6 +643,59 @@
     }
     requestAnimationFrame(step);
   }
+</script><script>
+  // Auto-load zones JSON hosted next to this HTML
+  async function autoLoadHostedZones() {
+    try {
+      // Encode space in file name; cache-bust so updates show immediately
+      const res = await fetch('Final%20Zones2.json?cb=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+
+      const data = await res.json();
+      const nextZones = Array.isArray(data) ? data : data.zones;
+      if (!nextZones || !nextZones.length) throw new Error('Invalid zones payload');
+
+      // Apply and normalize values
+      window.ZONES = nextZones.map(z => ({
+        key: z.key,
+        x: Number(z.x),
+        y: Number(z.y),
+        w: Number(z.w),
+        h: Number(z.h)
+      }));
+
+      // Optional: adopt imageKey from file
+      if (data.imageKey) window.state.imageKey = data.imageKey;
+
+      // Persist and render (Edge-safe)
+      localStorage.setItem('zones-' + window.state.imageKey, JSON.stringify(window.ZONES));
+      if (typeof ensureImageReady === 'function') await ensureImageReady();
+      requestAnimationFrame(() => { 
+        if (typeof syncOverlay === 'function') syncOverlay();
+        if (typeof renderZones === 'function') renderZones();
+      });
+
+      if (typeof showToast === 'function') showToast('Zonen automatisch geladen');
+      return true;
+    } catch (e) {
+      console.debug('Auto-Load Zonen fehlgeschlagen:', e);
+      return false;
+    }
+  }
+
+  // Run once at startup: try hosted JSON first, else fall back
+  (async function () {
+    const ok = await autoLoadHostedZones();
+    if (!ok) {
+      if (typeof loadSavedZones === 'function') loadSavedZones();
+      requestAnimationFrame(() => { 
+        if (typeof syncOverlay === 'function') syncOverlay();
+        if (typeof renderZones === 'function') renderZones();
+      });
+    }
+  })();
 </script>
+
 </body>
 </html>
+
