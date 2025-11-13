@@ -268,10 +268,6 @@
   window.addEventListener('resize', () => {
     requestAnimationFrame(() => {
       syncOverlay(); renderZones();
-      chipsList.querySelectorAll('.chip.locked').forEach(ch => {
-        const zone = zonesLayer.querySelector(`.zone[data-key="${ch.dataset.key}"]`);
-        if (zone) snapChipToZone(ch, zone, true);
-      });
       resizeCanvas();
     });
   });
@@ -328,6 +324,10 @@
         enableZoneDragAndResize(el, grip);
       }
     });
+
+    // Reattach locked chips so they follow zone changes
+    relocateLockedChips();
+
     setZonesVisible(state.showZones);
   }
 
@@ -409,15 +409,25 @@
     showToast('❌ Falsch – versuch’s nochmal');
   }
 
-  function snapChipToZone(el, zone, adapt=false) {
-    const zr = zone.getBoundingClientRect();
-    el.style.position = 'fixed';
-    el.style.left = (zr.left + 6) + 'px';
-    el.style.top  = (zr.top + 6) + 'px';
-    el.style.zIndex = '50';
-    if (adapt) adaptChipToZone(el, zone);
-    el.animate([{ transform: 'scale(0.98)' }, { transform: 'scale(1)' }], { duration: 140 });
+  // Anchor chip inside its zone so it never drifts on resize/monitor changes
+  function snapChipToZone(chip, zone, adapt=false) {
+    zone.appendChild(chip);
+    chip.style.position = 'absolute';
+    chip.style.zIndex = '1';
+    const pad = 6;
+    chip.style.left = pad + 'px';
+    chip.style.top  = pad + 'px';
+    if (adapt) adaptChipToZone(chip, zone);
+    chip.animate([{ transform: 'scale(0.98)' }, { transform: 'scale(1)' }], { duration: 140 });
     showToast('✅ Richtig!');
+  }
+
+  // Ensure locked chips follow zone after re-render/import/resize
+  function relocateLockedChips() {
+    document.querySelectorAll('.chip.locked').forEach(ch => {
+      const zone = zonesLayer.querySelector(`.zone[data-key="${ch.dataset.key}"]`);
+      if (zone) snapChipToZone(ch, zone, true);
+    });
   }
 
   function adaptChipToZone(chip, zone) {
@@ -526,7 +536,7 @@
     showToast('Zonen exportiert (JSON)');
   });
 
-  // Import — FIXED: anwenden, entsperren, rAF + ensureImageReady
+  // Import — apply + unlock + safe re-render
   importZonesBtn.addEventListener('click', () => zonesFileInput.click());
   zonesFileInput.addEventListener('change', async (e) => {
     const file = e.target.files?.[0];
@@ -538,21 +548,12 @@
 
       if (!nextZones || !nextZones.length) { showToast('Ungültige Zonen‑Datei'); e.target.value=''; return; }
 
-      // Werte normalisieren
-      ZONES = nextZones.map(z => ({
-        key: z.key,
-        x: Number(z.x),
-        y: Number(z.y),
-        w: Number(z.w),
-        h: Number(z.h)
-      }));
-
-      // Speicher aktualisieren (aktueller imageKey bleibt erhalten)
+      ZONES = nextZones.map(z => ({ key: z.key, x: Number(z.x), y: Number(z.y), w: Number(z.w), h: Number(z.h) }));
       localStorage.setItem('zones-' + state.imageKey, JSON.stringify(ZONES));
 
-      // Chips entsperren und Score resetten, damit neue Positionen klar erkennbar sind
+      // Unlock chips and reset score
       state.score = 0; state.placements.clear(); updateScore();
-      chipsList.querySelectorAll('.chip').forEach(ch => {
+      document.querySelectorAll('.chip').forEach(ch => {
         ch.classList.remove('locked');
         ch.style.transform = ch.style.position = ch.style.left = ch.style.top = ch.style.zIndex = '';
         ch.style.width = ch.style.height = ch.style.fontSize = '';
@@ -560,16 +561,13 @@
         chipsList.appendChild(ch);
       });
 
-      // Sicher neu rendern (Edge-safe)
       await ensureImageReady();
       requestAnimationFrame(() => { syncOverlay(); renderZones(); });
-
       showToast('Zonen importiert und angewendet');
     } catch (err) {
       console.error('Import error:', err);
       showToast('Import fehlgeschlagen');
     } finally {
-      // Damit das gleiche File erneut importiert werden kann
       e.target.value = '';
     }
   });
@@ -613,7 +611,7 @@
   }
   function resetAll() {
     state.score = 0; state.placements.clear(); updateScore();
-    chipsList.querySelectorAll('.chip').forEach(ch => {
+    document.querySelectorAll('.chip').forEach(ch => {
       ch.classList.remove('locked');
       ch.style.transform = ch.style.position = ch.style.left = ch.style.top = ch.style.zIndex = '';
       ch.style.width = ch.style.height = ch.style.fontSize = '';
@@ -643,58 +641,43 @@
     }
     requestAnimationFrame(step);
   }
-  // Auto-load zones JSON hosted next to this HTML
+
+  // Auto-load zones JSON hosted next to this HTML (robust for GitHub Pages)
   async function autoLoadHostedZones() {
     try {
-      // Encode space in file name; cache-bust so updates show immediately
-      const res = await fetch('Final%20Zones2.json?cb=' + Date.now(), { cache: 'no-store' });
+      const ZONES_FILENAME = 'Final Zones2.json'; // exact name, case-sensitive
+      const zonesUrl = new URL(ZONES_FILENAME, document.baseURI).toString() + '?cb=' + Date.now();
+
+      const res = await fetch(zonesUrl, { cache: 'no-store' });
       if (!res.ok) throw new Error('HTTP ' + res.status);
 
       const data = await res.json();
       const nextZones = Array.isArray(data) ? data : data.zones;
       if (!nextZones || !nextZones.length) throw new Error('Invalid zones payload');
 
-      // Apply and normalize values
-      window.ZONES = nextZones.map(z => ({
-        key: z.key,
-        x: Number(z.x),
-        y: Number(z.y),
-        w: Number(z.w),
-        h: Number(z.h)
-      }));
+      ZONES = nextZones.map(z => ({ key: z.key, x: Number(z.x), y: Number(z.y), w: Number(z.w), h: Number(z.h) }));
+      if (data.imageKey) state.imageKey = data.imageKey;
 
-      // Optional: adopt imageKey from file
-      if (data.imageKey) window.state.imageKey = data.imageKey;
+      localStorage.setItem('zones-' + state.imageKey, JSON.stringify(ZONES));
+      await ensureImageReady();
+      requestAnimationFrame(() => { syncOverlay(); renderZones(); });
 
-      // Persist and render (Edge-safe)
-      localStorage.setItem('zones-' + window.state.imageKey, JSON.stringify(window.ZONES));
-      if (typeof ensureImageReady === 'function') await ensureImageReady();
-      requestAnimationFrame(() => { 
-        if (typeof syncOverlay === 'function') syncOverlay();
-        if (typeof renderZones === 'function') renderZones();
-      });
-
-      if (typeof showToast === 'function') showToast('Zonen automatisch geladen');
+      showToast?.('Zonen automatisch geladen');
       return true;
     } catch (e) {
-      console.debug('Auto-Load Zonen fehlgeschlagen:', e);
+      console.debug('Auto-load failed:', e);
       return false;
     }
   }
 
-  // Run once at startup: try hosted JSON first, else fall back
+  // Run once at startup: prefer hosted JSON, else fall back to saved/default
   (async function () {
     const ok = await autoLoadHostedZones();
     if (!ok) {
-      if (typeof loadSavedZones === 'function') loadSavedZones();
-      requestAnimationFrame(() => { 
-        if (typeof syncOverlay === 'function') syncOverlay();
-        if (typeof renderZones === 'function') renderZones();
-      });
+      loadSavedZones?.();
+      requestAnimationFrame(() => { syncOverlay?.(); renderZones?.(); });
     }
   })();
 </script>
 </body>
 </html>
-
-
